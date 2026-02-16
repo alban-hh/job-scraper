@@ -62,7 +62,8 @@ def mblidh_subjekte(sesioni: requests.Session, fjalekyc_lista: list[str],
     return te_gjitha
 
 
-def pasuro_subjektet(sesioni: requests.Session, subjekte: dict[str, dict]) -> list[dict]:
+def pasuro_subjektet(sesioni: requests.Session, subjekte: dict[str, dict],
+                     shtegu_daljes: str) -> list[dict]:
     profile = []
     totali = len(subjekte)
 
@@ -83,6 +84,8 @@ def pasuro_subjektet(sesioni: requests.Session, subjekte: dict[str, dict]) -> li
 
         profili = nderto_profil(te_dhena, flamuj, kontaktet)
         profile.append(profili)
+
+        ruaj_subjektet(profile, shtegu_daljes)
 
         prit()
 
@@ -132,7 +135,7 @@ def main():
             profili = nderto_profil(te_dhena, flamuj, {"email": [], "telefon": []})
             profile.append(profili)
     else:
-        profile = pasuro_subjektet(sesioni, subjekte)
+        profile = pasuro_subjektet(sesioni, subjekte, args.dalje)
 
     ruaj_subjektet(profile, args.dalje)
 
