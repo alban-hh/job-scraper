@@ -18,7 +18,7 @@ def ruaj_subjektet(subjekte: list[dict], shtegu: str):
                 for s in lista:
                     if isinstance(s, dict) and "nipt" in s:
                         ekzistuese[s["nipt"]] = s
-        except (json.JSONDecodeError, KeyError) as gabim:
+        except json.JSONDecodeError as gabim:
             log.warning(f"Skedari ekzistues {shtegu} nuk u lexua ({gabim}), do ta mbishkruaj")
 
     for s in subjekte:
