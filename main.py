@@ -66,6 +66,7 @@ def pasuro_subjektet(sesioni: requests.Session, subjekte: dict[str, dict],
                      shtegu_daljes: str) -> list[dict]:
     profile = []
     totali = len(subjekte)
+    SAVE_INTERVAL = 10  # Save every 10 subjects to balance performance and crash recovery
 
     for i, (nipt, te_dhena) in enumerate(subjekte.items(), 1):
         emri = te_dhena.get("emriISubjektit", nipt)
@@ -84,6 +85,11 @@ def pasuro_subjektet(sesioni: requests.Session, subjekte: dict[str, dict],
 
         profili = nderto_profil(te_dhena, flamuj, kontaktet)
         profile.append(profili)
+
+        # Save periodically for crash recovery
+        if i % SAVE_INTERVAL == 0:
+            ruaj_subjektet(profile, shtegu_daljes)
+            log.debug(f"Progresi u ruajt ({i}/{totali})")
 
         prit()
 
