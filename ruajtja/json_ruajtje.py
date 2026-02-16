@@ -22,14 +22,13 @@ def ruaj_subjektet(subjekte: list[dict], shtegu: str):
             log.warning(f"Skedari ekzistues {shtegu} nuk u lexua ({gabim}), do ta mbishkruaj")
 
     for s in subjekte:
-        if isinstance(s, dict) and "nipt" in s:
-            ekzistuese[s["nipt"]] = s
+        if not isinstance(s, dict):
+            log.warning(f"Subjekt me tip te pavlefshem u injorua: {type(s).__name__}")
+        elif "nipt" not in s:
+            emri = s.get('emri_subjektit', 'I panjohur')
+            log.warning(f"Subjekt pa NIPT u injorua: {emri}")
         else:
-            if isinstance(s, dict):
-                emri = s.get('emri_subjektit', 'I panjohur')
-                log.warning(f"Subjekt pa NIPT u injorua: {emri}")
-            else:
-                log.warning(f"Subjekt me tip te pavlefshem u injorua: {type(s).__name__}")
+            ekzistuese[s["nipt"]] = s
 
     lista_perfundimtare = list(ekzistuese.values())
     lista_perfundimtare.sort(key=lambda x: x.get("emri_subjektit", ""))
