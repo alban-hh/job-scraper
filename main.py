@@ -85,8 +85,6 @@ def pasuro_subjektet(sesioni: requests.Session, subjekte: dict[str, dict],
         profili = nderto_profil(te_dhena, flamuj, kontaktet)
         profile.append(profili)
 
-        ruaj_subjektet(profile, shtegu_daljes)
-
         prit()
 
     return profile

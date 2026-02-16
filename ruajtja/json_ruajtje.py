@@ -16,12 +16,16 @@ def ruaj_subjektet(subjekte: list[dict], shtegu: str):
             with open(shtegu, "r", encoding="utf-8") as skedar:
                 lista = json.load(skedar)
                 for s in lista:
-                    ekzistuese[s["nipt"]] = s
-        except (json.JSONDecodeError, KeyError):
-            log.warning(f"Skedari ekzistues {shtegu} nuk u lexua, do ta mbishkruaj")
+                    if isinstance(s, dict) and "nipt" in s:
+                        ekzistuese[s["nipt"]] = s
+        except (json.JSONDecodeError, KeyError) as gabim:
+            log.warning(f"Skedari ekzistues {shtegu} nuk u lexua ({gabim}), do ta mbishkruaj")
 
     for s in subjekte:
-        ekzistuese[s["nipt"]] = s
+        if "nipt" in s:
+            ekzistuese[s["nipt"]] = s
+        else:
+            log.warning(f"Subjekt pa NIPT u injorua: {s.get('emri_subjektit', 'I panjohur')}")
 
     lista_perfundimtare = list(ekzistuese.values())
     lista_perfundimtare.sort(key=lambda x: x.get("emri_subjektit", ""))
