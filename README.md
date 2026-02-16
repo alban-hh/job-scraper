@@ -1,16 +1,24 @@
 # job-scraper
 
-Scraper per pune shqiptare. Merr te dhena nga faqe te ndryshme pune si duapune.com, njoftime.com, etj. dhe i ruan ne JSON per analiz.
+Scraper per biznese shqiptare nga QKB (Qendra Kombetare e Biznesit). Kerkon subjekte tech ne regjistrin tregtar, merr te dhenat e tyre, shkarkon ekstraktin PDF dhe nxjerr kontaktet (email, telefon). Rezultatet ruhen ne JSON.
 
-**Projekti eshte akoma ne fazen fillestare - kjo qe sheh ktu eshte vetem skeleti baze. Asgje nuk funksionon akoma.**
+**Akoma ne zhvillim - disa pjese mund te mos funksionojne si duhet.**
 
 ## Struktura
 
 ```
 job-scraper/
-  main.py            - skripta kryesore
-  requirements.txt   - dependencies
-  data/              - ktu ruhen rezultatet
+  main.py               - entry point, CLI, orkestrimi i gjithe procesit
+  config.py             - URL-te, headers, fjalekyc, parametra
+  scraper/
+    __init__.py
+    kerkimi.py          - kerkon subjekte ne QKB (POST form -> parse JSON nga HTML)
+    detajet.py          - merr flamujt e kuq + dokumentin PDF per cdo NIPT
+    nxjerresi.py        - dekodon PDF base64, nxjerr email/telefon me pdfplumber
+  ruajtja/
+    __init__.py
+    json_ruajtje.py     - ruan profilet ne JSON, deduplikon me NIPT
+  data/                 - ktu ruhen rezultatet
 ```
 
 ## Si ta nisesh
@@ -24,25 +32,61 @@ pip install -r requirements.txt
 ## Perdorimi
 
 ```bash
-# kerkim baze
-python main.py --fjalekyc developer python
+# kerkim me fjalekyc parazgjedhje (internet, software, IT, teknologji)
+python main.py
 
-# kerkim me vendndodhje specifike
-python main.py --fjalekyc developer --vendndodhje Tirane Durres
+# vetem nje fjalekyc specifike
+python main.py -f software
 
-# me debug logging
-python main.py --fjalekyc developer --debug
+# qytet tjeter
+python main.py -q durres -r durres
+
+# pa shkarkuar PDF (me shpejt, pa kontakte)
+python main.py --pa-pdf
+
+# debug logging
+python main.py --debug
+
+# output ne shteg tjeter
+python main.py -d data/tech_tirane.json
 ```
 
-Rezultatet ruhen ne `data/pune.json` si parazgjedhje. Mund ta ndryshosh me `--dalje shtegu/tjeter.json`.
+Rezultatet ruhen ne `data/subjekte.json` si parazgjedhje.
 
-## Cfare mbetet per tu bere
+## Si duket nje profil ne JSON
 
-- Scraper per duapune.com
-- Scraper per njoftime.com
-- Filtrim me i avancuar i rezultateve
-- Rate limiting qe te mos bllokohemi
+```json
+{
+  "nipt": "L51306027M",
+  "emri_subjektit": "TIMBAST",
+  "emri_tregtar": "TIMBAST",
+  "forma_ligjore": "SHA",
+  "data_regjistrimit": "06/01/2015",
+  "qyteti": "Tirane",
+  "pronesia": "E Perbashket (shqiptare - e huaj)",
+  "statusi": "Aprovuar",
+  "aktiviteti": "...",
+  "administrator_ortak": "Alban Mesonjesi;...",
+  "flamur_kuq": {
+    "rpp": "",
+    "bilanci": "Subjekti nuk ka depozituar...",
+    "admin": "Afati i emerimit...",
+    "ka_flamur": true
+  },
+  "kontakti": {
+    "email": ["info@example.al"],
+    "telefon": ["+355 4 123 4567"]
+  }
+}
+```
+
+## Cfare mbetet
+
+- Mbulim per qytete te tjera pervec Tiranes
+- Fjalekyc me te gjera per industri te tjera
+- Eksport ne formate te tjera (CSV, Excel)
+- Retry logic per kerkesa qe deshtojne
 
 ## Shenim
 
-Kjo eshte vetem per perdorim personal. Ki kujdes me terms of service te faqeve qe scrapon.
+Vetem per perdorim personal. Kerkesa behen me 1-2 sekonda vonese mes tyre qe te mos ngarkojme serverin e QKB.
