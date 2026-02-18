@@ -19,6 +19,8 @@ QARKU_PARAZGJEDHJE = "tirane"
 VONESA_MIN = 1.0
 VONESA_MAX = 2.0
 
+SAVE_INTERVAL = 10  # Save progress every N subjects for crash recovery
+
 FUSHAT_KERKIMIT = {
     "orderColumn": "0",
     "orderDir": "asc",

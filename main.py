@@ -10,6 +10,7 @@ from config import (
     QARKU_PARAZGJEDHJE,
     VONESA_MIN,
     VONESA_MAX,
+    SAVE_INTERVAL,
 )
 from scraper import kerko_subjekte, merr_flamuj, merr_dokument, nxirr_kontaktet
 from ruajtja import ruaj_subjektet
@@ -85,7 +86,10 @@ def pasuro_subjektet(sesioni: requests.Session, subjekte: dict[str, dict],
         profili = nderto_profil(te_dhena, flamuj, kontaktet)
         profile.append(profili)
 
-        ruaj_subjektet(profile, shtegu_daljes)
+        # Save periodically for crash recovery
+        if i % SAVE_INTERVAL == 0:
+            ruaj_subjektet(profile, shtegu_daljes)
+            log.debug(f"Progresi u ruajt ({i}/{totali})")
 
         prit()
 

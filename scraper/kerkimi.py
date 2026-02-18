@@ -32,6 +32,10 @@ def _nxirr_json_nga_html(html: str) -> list[dict]:
         log.error(f"Gabim ne parsimin e JSON: {gabim}")
         return []
 
+    if not isinstance(te_dhena, list):
+        log.warning(f"JSON i parsuar nuk eshte list, por {type(te_dhena).__name__}")
+        return []
+
     return te_dhena
 
 
